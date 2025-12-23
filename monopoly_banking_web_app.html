@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monopoly Banking</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0b5ed7;
+      margin: 0;
+      padding: 15px;
+      color: #fff;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .card {
+      background: #ffffff;
+      color: #000;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .player {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .player:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+    button {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      margin: 3px;
+      cursor: pointer;
+    }
+    .plus { background: #198754; color: #fff; }
+    .minus { background: #dc3545; color: #fff; }
+    .reset { background: #6c757d; color: #fff; width: 100%; }
+    .money {
+      font-weight: bold;
+    }
+    footer {
+      text-align: center;
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>💰 Monopoly Banking</h1>
+
+<div class="card" id="players"></div>
+
+<div class="card">
+  <button class="reset" onclick="resetGame()">🔄 Neues Spiel starten</button>
+</div>
+
+<footer>
+  3 Spieler · Startgeld: 15.000.000
+</footer>
+
+<script>
+  const START_GELD = 15000000;
+  const BETRAG = 100000; // Standard-Buchung: 100k
+
+  let spieler = [
+    { name: "Spieler 1", geld: START_GELD },
+    { name: "Spieler 2", geld: START_GELD },
+    { name: "Spieler 3", geld: START_GELD }
+  ];
+
+  function render() {
+    const container = document.getElementById('players');
+    container.innerHTML = '';
+
+    spieler.forEach((s, i) => {
+      const div = document.createElement('div');
+      div.className = 'player';
+      div.innerHTML = `
+        <div>
+          <strong>${s.name}</strong><br>
+          <span class="money">${s.geld.toLocaleString('de-DE')} €</span>
+        </div>
+        <div>
+          <button class="plus" onclick="addMoney(${i})">+${BETRAG / 1000}k</button>
+          <button class="minus" onclick="removeMoney(${i})">-${BETRAG / 1000}k</button>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function addMoney(index) {
+    spieler[index].geld += BETRAG;
+    render();
+  }
+
+  function removeMoney(index) {
+    spieler[index].geld -= BETRAG;
+    if (spieler[index].geld < 0) spieler[index].geld = 0;
+    render();
+  }
+
+  function resetGame() {
+    if (confirm('Neues Spiel starten? Alle Kontostände werden zurückgesetzt.')) {
+      spieler.forEach(s => s.geld = START_GELD);
+      render();
+    }
+  }
+
+  render();
+</script>
+
+</body>
+</html>
